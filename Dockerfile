@@ -8,16 +8,6 @@ RUN mkdir -p /opt/bospy/ && \
 USER $NB_UID
 
 # bospy dependancies and extras
-
-# RUN python -m pip install grpcio-tools
-# RUN python -m pip install grpcio
-# RUN python -m pip install rdflib
-# RUN python -m pip install pandas
-
-# extras
-# RUN python -m pip install matplotlib
-# RUN python -m pip install neuromancer
-# RUN python -m pip install wandb
 COPY apps/jupyter/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -28,9 +18,13 @@ WORKDIR /opt/bospy/
 COPY bindings/python/bospy/ /opt/bospy/
 RUN pip install -e .
 
-# updates
-RUN  pip install --upgrade grpcio
-RUN  pip install --upgrade protobuf
+COPY apps/jupyter/overrides.json /opt/conda/share/jupyter/lab/settings/overrides.json
+
+ENV SYSMOD_ADDR=nuc.local:2821
+ENV DEVCTRL_ADDR=nuc.local:2822 
+ENV HISTORY_ADDR=nuc.local:2823
+ENV FORECAST_ADDR=nuc.local:2825 
+ENV SCHEDULER_ADDR=nuc.local:2824
 
 WORKDIR /opt/data/
 
